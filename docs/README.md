@@ -95,8 +95,8 @@
 
 ```json
 {
-    'previous_questions': [1, 4, 20, 15],
-	'quiz_category': '{type: "click", id: 0}'
+    "previous_questions": [1, 4, 20, 15],
+    "quiz_category": {"type": "click", "id": 0}
  }
 ```
 If don't want to filter by category, need to pass as `id`: `0` . It will return the random questions to answer. If `quiz_category` is passed only questions form that selected category will show without duplicate with previous question.
