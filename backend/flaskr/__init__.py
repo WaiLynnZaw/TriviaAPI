@@ -162,23 +162,23 @@ def create_app(test_config=None):
     def start_playing():
         try:
             body = request.get_json()
-            quiz_category = body.get('quiz_category')
+            category_id = body.get('quiz_category')['id']
+            category_type = body.get('quiz_category')['type']
             previous_questions = body.get('previous_questions')
-            category_id = quiz_category['id']
 
-            if category_id == 0:
-                questions = Question.query.filter(Question.id.notin_(previous_questions)).all()
+            if category_type == 'click': # if choose all, passing type as 'click'
+                questions = Question.query.all()
             else:
-                questions = Question.query.filter(Question.id.notin_(previous_questions), 
-                    Question.category == category_id).all()
-            
-            question = None
-            if(questions):
-                question = random.choice(questions)
+                questions = Question.query.filter(Question.category==category_id).all()
+
+            results = [q for q in questions if q.id not in previous_questions]
+            current_question = None
+            if(results):
+                current_question = random.choice(results)
 
             return jsonify({
                 'success': True,
-                'question': question.format()
+                'question': current_question.format()
             })
         except:
             abort(422)
