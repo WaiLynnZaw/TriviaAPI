@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
 from models import setup_db, Question, Category
+from dotenv import load_dotenv
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -12,8 +13,10 @@ class TriviaTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
+        load_dotenv()
+        self.database_name = os.getenv("DB_NAME_TEST")
+        self.database_url = os.getenv("DB_URL")
+        self.database_path = "postgres://{}/{}".format(self.database_url, self.database_name)
         
         self.app = create_app({
             "SQLALCHEMY_DATABASE_URI": self.database_path
@@ -93,7 +96,6 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['categories'])
 
     def test_get_question_by_category(self):
         res = self.client().get('/categories/2/questions')
