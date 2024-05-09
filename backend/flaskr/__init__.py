@@ -180,6 +180,11 @@ def create_app(test_config=None):
             current_question = None
             if (results):
                 current_question = random.choice(results)
+            else:
+                return jsonify({
+                    'success': True,
+                    'question': None
+                })
 
             return jsonify({
                 'success': True,

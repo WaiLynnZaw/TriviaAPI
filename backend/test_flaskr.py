@@ -32,6 +32,8 @@ class TriviaTestCase(unittest.TestCase):
             self.db.create_all()
         
         self.new_question = {"question":"Country of origin for MilkMocha", "answer":"Indonesia", "category":"5", "difficulty":"2"}
+        self.success_quiz = {"previous_questions": [6, 24, 2], "quiz_category": {"type": "Entertainment", "id": "5"}}
+        self.error_quiz = {"previous_questions": [], "quiz_category": {}}
 
 
     def tearDown(self):
@@ -114,6 +116,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
+        
+    def test_get_quiz(self):
+        res = self.client().post('/quizzes', json=self.success_quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertNotEqual(data['question'], None)
+        
+    def test_fail_get_quiz(self):
+        res = self.client().post('/quizzes', json=self.error_quiz)
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        
 
 
 # Make the tests conveniently executable
